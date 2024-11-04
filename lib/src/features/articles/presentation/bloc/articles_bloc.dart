@@ -3,19 +3,18 @@ import 'package:ny_times_app/src/core/network/error/failures.dart';
 import 'package:ny_times_app/src/core/utils/constant/app_constants.dart';
 import 'package:ny_times_app/src/features/articles/domain/models/article_model.dart';
 import 'package:ny_times_app/src/features/articles/domain/models/articles_params.dart';
-import 'package:ny_times_app/src/features/articles/domain/usecases/articles_usecase.dart';
+import 'package:ny_times_app/src/features/articles/domain/repositories/abstract_articles_repository.dart';
 
 part 'articles_event.dart';
-
 part 'articles_state.dart';
 
 class ArticlesBloc extends Bloc<ArticlesEvent, ArticlesState> {
-  final ArticlesUseCase articlesUseCase;
+  final AbstractArticlesRepository articlesRepository;
 
   // List of articles
   List<ArticleModel> allArticles = [];
 
-  ArticlesBloc({required this.articlesUseCase})
+  ArticlesBloc({required this.articlesRepository})
       : super(LoadingGetArticlesState()) {
     on<OnGettingArticlesEvent>(_onGettingArticlesEvent);
     on<OnSearchingArticlesEvent>(_onSearchingEvent);
@@ -28,7 +27,7 @@ class ArticlesBloc extends Bloc<ArticlesEvent, ArticlesState> {
       emitter(LoadingGetArticlesState());
     }
 
-    final result = await articlesUseCase.call(
+    final result = await articlesRepository.getArticles(
       ArticlesParams(
         period: event.period,
       ),

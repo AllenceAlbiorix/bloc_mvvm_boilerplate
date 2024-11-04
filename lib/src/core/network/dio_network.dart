@@ -7,18 +7,13 @@ import 'package:ny_times_app/src/core/utils/constant/network_constant.dart';
 import 'package:ny_times_app/src/core/helper/helper.dart';
 import 'package:ny_times_app/src/core/utils/log/app_logger.dart';
 
-class DioNetwork {
-  static late Dio appAPI;
-  static late Dio retryAPI;
+class DioNetwork with DioMixin implements Dio {
+  DioNetwork(){
+    this.httpClientAdapter= HttpClientAdapter();
+    this.options = baseOptions(apiUrl);
+    this.interceptors.add(loggerInterceptor());
+    this.interceptors.add(appQueuedInterceptorsWrapper());
 
-  static void initDio() {
-    appAPI = Dio(baseOptions(apiUrl));
-    appAPI.interceptors.add(loggerInterceptor());
-    appAPI.interceptors.add(appQueuedInterceptorsWrapper());
-
-    retryAPI = Dio(baseOptions(apiUrl));
-    retryAPI.interceptors.add(loggerInterceptor());
-    retryAPI.interceptors.add(interceptorsWrapper());
   }
 
   static LoggerInterceptor loggerInterceptor() {
@@ -36,7 +31,7 @@ class DioNetwork {
   ///__________App__________///
 
   /// App Api Queued Interceptor
-  static QueuedInterceptorsWrapper appQueuedInterceptorsWrapper() {
+   QueuedInterceptorsWrapper appQueuedInterceptorsWrapper() {
     return QueuedInterceptorsWrapper(
       onRequest: (RequestOptions options, r) async {
         Map<String, dynamic> headers = Helper.getHeaders();
@@ -46,7 +41,7 @@ class DioNetwork {
           print(json.encode(headers));
         }
         options.headers = headers;
-        appAPI.options.headers = headers;
+        this.options.headers = headers;
         return r.next(options);
       },
       onError: (error, handler) async {
@@ -60,36 +55,6 @@ class DioNetwork {
       onResponse: (Response<dynamic> response,
           ResponseInterceptorHandler handler) async {
         return handler.next(response);
-      },
-    );
-  }
-
-  /// App interceptor
-  static InterceptorsWrapper interceptorsWrapper() {
-    return InterceptorsWrapper(
-      onRequest: (RequestOptions options, r) async {
-        Map<String, dynamic> headers = Helper.getHeaders();
-
-        options.headers = headers;
-        appAPI.options.headers = headers;
-
-        return r.next(options);
-      },
-      onResponse: (response, handler) async {
-        if ("${(response.data["code"] ?? "0")}" != "0") {
-          return handler.resolve(response);
-          // return handler.reject(DioError(requestOptions: response.requestOptions, response: response, error: response, type: DioErrorType.response));
-        } else {
-          return handler.next(response);
-        }
-      },
-      onError: (error, handler) {
-        try {
-          return handler.next(error);
-        } catch (e) {
-          return handler.reject(error);
-          // onUnexpectedError(handler, error);
-        }
       },
     );
   }

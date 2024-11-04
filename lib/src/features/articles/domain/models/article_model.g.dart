@@ -9,8 +9,8 @@ part of 'article_model.dart';
 ArticleModel _$ArticleModelFromJson(Map<String, dynamic> json) => ArticleModel(
       uri: json['uri'] as String?,
       url: json['url'] as String?,
-      id: json['id'] as int?,
-      assetId: json['asset_id'] as int?,
+      id: (json['id'] as num?)?.toInt(),
+      assetId: (json['asset_id'] as num?)?.toInt(),
       source: json['source'] as String?,
       publishedDate: json['published_date'] as String?,
       updated: json['updated'] as String?,
@@ -37,7 +37,7 @@ ArticleModel _$ArticleModelFromJson(Map<String, dynamic> json) => ArticleModel(
           .toList(),
       media:
           (json['media'] as List<dynamic>?)?.map(MediaModel.fromJson).toList(),
-      etaId: json['eta_id'] as int?,
+      etaId: (json['eta_id'] as num?)?.toInt(),
     );
 
 Map<String, dynamic> _$ArticleModelToJson(ArticleModel instance) =>

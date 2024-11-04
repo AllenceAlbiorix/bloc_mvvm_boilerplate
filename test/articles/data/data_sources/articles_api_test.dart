@@ -2,6 +2,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
+import 'package:ny_times_app/src/core/network/dio_network.dart';
 import 'package:ny_times_app/src/core/network/error/exceptions.dart';
 import 'package:ny_times_app/src/core/utils/constant/network_constant.dart';
 import 'package:ny_times_app/src/features/articles/data/data_sources/remote/abstract_article_api.dart';
@@ -12,21 +13,21 @@ import 'articles_api_test.mocks.dart';
 import 'mock_data/actual_article_json.dart';
 import 'mock_data/expected_article_data.dart';
 
-@GenerateMocks([Dio])
+@GenerateMocks([DioNetwork])
 void main() {
   // Api Params
   ArticlesParams articlesParams = ArticlesParams(period: 30);
 
   // Mocked Dio class
-  late MockDio mockDio;
+  late MockDioNetwork mockDio;
 
   // Our Api class that we need to test it.
   // The dependency for this class will be from the mocked Dio class not from
   // real Dio class
   late AbstractArticleApi articlesApi;
   setUp(() {
-    mockDio = MockDio();
-    articlesApi = ArticlesImplApi(mockDio);
+    mockDio = MockDioNetwork();
+    articlesApi = ArticlesImplApi(mockDio as DioNetwork);
   });
 
   RequestOptions requestOptions = RequestOptions();

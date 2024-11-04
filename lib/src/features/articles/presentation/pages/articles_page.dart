@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:ny_times_app/src/features/articles/data/repositories/articles_repo_impl.dart';
+import 'package:ny_times_app/src/features/articles/domain/repositories/abstract_articles_repository.dart';
 import 'package:ny_times_app/src/shared/presentation/pages/background_page.dart';
 import 'package:ny_times_app/src/shared/presentation/widgets/app_loader.dart';
 import 'package:ny_times_app/src/shared/presentation/widgets/custom_app_bar_widget.dart';
@@ -23,16 +25,13 @@ class ArticlesPage extends StatefulWidget {
 }
 
 class _ArticlesPageState extends State<ArticlesPage> {
-  ArticlesBloc _bloc = ArticlesBloc(
-    articlesUseCase: sl<ArticlesUseCase>()
-  );
+  ArticlesBloc _bloc = ArticlesBloc(articlesRepository: sl<AbstractArticlesRepository>());
 
   // Key for scaffold to open drawer
   GlobalKey<ScaffoldState> _key = GlobalKey();
 
   // Refresh controller for list view
-  RefreshController _refreshController =
-      RefreshController(initialRefresh: false);
+  RefreshController _refreshController = RefreshController(initialRefresh: false);
 
   bool isSearching = false;
 

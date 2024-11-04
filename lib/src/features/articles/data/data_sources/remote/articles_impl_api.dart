@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import 'package:ny_times_app/src/core/network/dio_network.dart';
 import 'package:ny_times_app/src/core/network/error/dio_error_handler.dart';
 import 'package:ny_times_app/src/core/network/error/exceptions.dart';
 import 'package:ny_times_app/src/core/utils/constant/network_constant.dart';
@@ -9,7 +10,7 @@ import 'package:ny_times_app/src/features/articles/domain/models/article_model.d
 import 'package:ny_times_app/src/features/articles/domain/usecases/articles_usecase.dart';
 
 class ArticlesImplApi extends AbstractArticleApi {
-  final Dio dio;
+  final DioNetwork dio;
 
   CancelToken cancelToken = CancelToken();
 
@@ -28,8 +29,8 @@ class ArticlesImplApi extends AbstractArticleApi {
 
       return ApiResponse.fromJson<List<ArticleModel>>(
           result.data, ArticleModel.fromJsonList);
-    } on DioError catch (e) {
-      if (e.type == DioErrorType.cancel) {
+    } on DioException catch (e) {
+      if (e.type == DioExceptionType.cancel) {
         throw CancelTokenException(handleDioError(e), e.response?.statusCode);
       } else {
         throw ServerException(handleDioError(e), e.response?.statusCode);

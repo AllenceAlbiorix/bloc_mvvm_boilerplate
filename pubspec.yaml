@@ -45,7 +45,7 @@ dependencies:
   flutter_screenutil: ^5.9.0
 
   # For Localization
-  intl: ^0.18.1
+  intl: ^0.19.0
 
   # Handle Success/Error State From Data Source
   dartz: ^0.10.1
