@@ -28,6 +28,7 @@ jobs:
       #     restore-keys: ${{ runner.os }}-pub-
 
       - run: flutter clean
+      - run: flutter pub cache repair
       - run: flutter precache
       - run: flutter pub get
 
