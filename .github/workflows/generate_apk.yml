@@ -18,14 +18,14 @@ jobs:
 
       - uses: subosito/flutter-action@v2
         with:
-          flutter-version: '3.24.5'
+          flutter-version: '3.24.3'
           channel: "stable"
 
-      - uses: actions/cache@v2
-        with:
-          path: ${{ env.FLUTTER_HOME }}/.pub-cache
-          key: ${{ runner.os }}-pub-${{ hashFiles('**/pubspec.lock') }}
-          restore-keys: ${{ runner.os }}-pub-
+      # - uses: actions/cache@v2
+      #   with:
+      #     path: ${{ env.FLUTTER_HOME }}/.pub-cache
+      #     key: ${{ runner.os }}-pub-${{ hashFiles('**/pubspec.lock') }}
+      #     restore-keys: ${{ runner.os }}-pub-
 
       - run: flutter clean
       - run: flutter precache
